@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-900">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Evaluación Adverbios de Frecuencia en Inglés</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Deshabilitar selecciones accidentales y zooms en móviles */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        /* Permitir selección de texto sólo en inputs */
+        input {
+            user-select: text !important;
+            -webkit-user-select: text !important;
+        }
+
+        /* Estilos de impresión para Certificado / Ficha */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            .print-card {
+                border: 2px solid #000 !important;
+                box-shadow: none !important;
+                background: white !important;
+                color: black !important;
+            }
+        }
+
+        .prevent-copy {
+            -webkit-touch-callout: none;
+        }
+    </style>
+</head>
+<body class="h-full font-sans text-slate-100 bg-slate-900 antialiased flex flex-col justify-between prevent-copy overflow-x-hidden min-h-screen">
+
+    <!-- BARRA SUPERIOR / HEADER -->
+    <header class="bg-slate-800/90 backdrop-blur border-b border-slate-700 sticky top-0 z-40 px-4 py-3 no-print">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="bg-brand-600 text-white p-2 rounded-lg font-bold text-lg shadow-lg">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-base md:text-lg text-white leading-tight">Adverbios de Frecuencia</h1>
+                    <p class="text-xs text-slate-400">Práctica Oficial • 50 Ejercicios</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <button id="rulesBtn" onclick="toggleModal('rulesModal', true)" class="hidden text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-2 rounded-lg transition border border-slate-600 flex items-center gap-1.5">
+                    <i class="fa-solid fa-book-open text-brand-500"></i>
+                    <span class="hidden sm:inline">Reglas</span>
+                </button>
+                <div id="antiCopyBadge" class="hidden text-xs bg-emerald-950/80 border border-emerald-500/50 text-emerald-400 px-2.5 py-1.5 rounded-lg flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span class="font-semibold text-[11px] sm:text-xs">Anticopia Activo</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ALERTA ANTICOPIA POPUP -->
+    <div id="cheatWarningBanner" class="hidden fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-rose-600 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl shadow-2xl border border-rose-400 flex items-center gap-2 max-w-[90%] animate-bounce">
+        <i class="fa-solid fa-triangle-exclamation text-base"></i>
+        <span>¡Advertencia! Salir de la pantalla genera un registro por sospecha de copia.</span>
+    </div>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <main class="flex-grow flex items-center justify-center p-3 sm:p-6">
+        <div class="w-full max-w-2xl mx-auto">
+
+            <!-- 1. PANTALLA DE REGISTRO E INICIO -->
+            <div id="welcomeCard" class="bg-slate-800 border border-slate-700 rounded-2xl p-6 sm:p-8 shadow-2xl">
+                <div class="text-center mb-6">
+                    <div class="inline-flex p-3 bg-brand-500/10 text-brand-500 rounded-2xl mb-3 border border-brand-500/20">
+                        <i class="fa-solid fa-user-pen text-3xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-white mb-1">Registro del Estudiante</h2>
+                    <p class="text-slate-400 text-sm">Ingresa tus datos antes de comenzar la evaluación (50 preguntas sobre 10.00 puntos).</p>
+                </div>
+
+                <form id="startForm" onsubmit="startTest(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                            Nombre y Apellido del Estudiante <span class="text-rose-400">*</span>
+                        </label>
+                        <input type="text" id="studentName" required placeholder="Ej: Maria Gonzalez" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-brand-500 text-base">
+                    </div>
+
+                    <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-700/80 space-y-2 text-xs text-slate-300">
+                        <p class="font-semibold text-slate-200 flex items-center gap-2">
+                            <i class="fa-solid fa-shield-halved text-brand-500"></i> Medidas Integradas:
+                        </p>
+                        <ul class="list-disc list-inside space-y-1 text-slate-400">
+                            <li><strong>Orden aleatorio:</strong> Preguntas y respuestas se mezclan en cada intento.</li>
+                            <li>Bloqueo de clic derecho, copiado, pegado y atajos de teclado.</li>
+                            <li>Detección automática de cambio de pestañas o aplicación.</li>
+                            <li>Calificación estricta escalada de 0.00 a 10.00 puntos.</li>
+                        </ul>
+                    </div>
+
+                    <button type="submit" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition active:scale-[0.99] flex items-center justify-center gap-2 text-base">
+                        <span>Iniciar Evaluación</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- 2. PANTALLA DEL EXAMEN -->
+            <div id="quizCard" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-5 sm:p-7 shadow-2xl relative">
+                
+                <!-- Encabezado de Progreso -->
+                <div class="mb-5 pb-4 border-b border-slate-700/80">
+                    <div class="flex items-center justify-between text-xs font-semibold mb-2">
+                        <span id="questionCounter" class="text-brand-400 uppercase tracking-wider">Pregunta 1 de 50</span>
+                        <span id="streakBadge" class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-1 rounded-full flex items-center gap-1">
+                            <i class="fa-solid fa-fire"></i> <span id="streakCount">Racha: 0</span>
+                        </span>
+                    </div>
+                    <div class="w-full bg-slate-900 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-700">
+                        <div id="progressBar" class="bg-brand-500 h-full rounded-full transition-all duration-300 w-0"></div>
+                    </div>
+                </div>
+
+                <!-- Enunciado de la Pregunta -->
+                <div class="mb-6">
+                    <div class="flex items-start justify-between gap-3">
+                        <div>
+                            <span id="questionCategory" class="inline-block text-[10px] font-bold uppercase tracking-widest text-slate-400 bg-slate-900/80 px-2 py-0.5 rounded mb-2 border border-slate-700">Categoría</span>
+                            <h3 id="questionTitle" class="text-base sm:text-lg font-bold text-white leading-snug">Cargando pregunta...</h3>
+                        </div>
+                    </div>
+                    <p id="questionContext" class="text-xs text-slate-400 mt-2 bg-slate-900/40 p-2.5 rounded-lg border border-slate-700/50 hidden"></p>
+                </div>
+
+                <!-- Área de Interacción -->
+                <div id="interactionArea" class="space-y-3 min-h-[160px] flex flex-col justify-center">
+                    <!-- Dinámico por JS -->
+                </div>
+
+                <!-- Retroalimentación / Explicación -->
+                <div id="feedbackBox" class="hidden mt-4 p-4 rounded-xl border text-xs sm:text-sm transition-all duration-200">
+                    <!-- JS inyecta estado -->
+                </div>
+            </div>
+
+            <!-- 3. PANTALLA DE RESULTADOS -->
+            <div id="resultCard" class="hidden bg-slate-800 border border-slate-700 rounded-2xl p-6 sm:p-8 shadow-2xl">
+                <div class="text-center mb-6">
+                    <div id="resultIcon" class="inline-flex p-4 rounded-full mb-3 text-4xl">
+                        <!-- JS Icon -->
+                    </div>
+                    <h2 class="text-2xl font-bold text-white" id="resultTitle">Resultados Obtenidos</h2>
+                    <p class="text-slate-400 text-xs sm:text-sm mt-1" id="studentResultName">Estudiante</p>
+                </div>
+
+                <!-- Tarjeta de Nota -->
+                <div class="bg-slate-900 border border-slate-700 rounded-xl p-5 mb-6 text-center print-card">
+                    <p class="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-1">Calificación Final</p>
+                    <div class="text-4xl sm:text-5xl font-black text-brand-400 mb-2" id="finalGrade">0.00 / 10.00</div>
+                    
+                    <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-800 text-xs text-slate-300">
+                        <div>
+                            <span class="block text-slate-500 text-[10px] uppercase font-bold">Aciertos</span>
+                            <span id="correctCountText" class="font-bold text-emerald-400 text-base">0 / 50</span>
+                        </div>
+                        <div>
+                            <span class="block text-slate-500 text-[10px] uppercase font-bold">Estado Anticopia</span>
+                            <span id="antiCopyStatusText" class="font-bold text-emerald-400 text-base">Limpio</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estado del Envío Web3Forms -->
+                <div id="emailStatusBox" class="mb-6 p-4 rounded-xl text-xs border bg-slate-900 border-slate-700 flex items-center gap-3">
+                    <div id="emailSpinner" class="text-brand-400">
+                        <i class="fa-solid fa-spinner animate-spin text-base"></i>
+                    </div>
+                    <div>
+                        <p id="emailStatusTitle" class="font-bold text-slate-200">Procesando envío de informe...</p>
+                        <p id="emailStatusDetail" class="text-slate-400 text-[11px]">Enviando copia de nota a Web3Forms.</p>
+                    </div>
+                </div>
+
+                <!-- Informe de Copia si existen incidencias -->
+                <div id="suspicionReport" class="hidden mb-6 p-4 rounded-xl bg-rose-950/40 border border-rose-500/30 text-xs">
+                    <p class="font-bold text-rose-300 mb-1 flex items-center gap-1.5">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Registro de Incidencias Anticopia:
+                    </p>
+                    <ul id="suspicionList" class="list-disc list-inside text-rose-200/80 space-y-0.5 text-[11px]"></ul>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="flex flex-col sm:flex-row gap-3 no-print">
+                    <button onclick="window.print()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-semibold py-3 px-4 rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-print"></i> Imprimir / Guardar PDF
+                    </button>
+                    <button onclick="restartQuiz()" class="flex-1 bg-brand-600 hover:bg-brand-500 text-white font-bold py-3 px-4 rounded-xl text-xs sm:text-sm transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> Repetir Evaluación
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- MODAL DE REGLAS GRAMATICALES -->
+    <div id="rulesModal" class="hidden fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl max-w-lg w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="p-4 border-b border-slate-700 flex justify-between items-center bg-slate-800/80">
+                <h3 class="font-bold text-white text-base flex items-center gap-2">
+                    <i class="fa-solid fa-book-open text-brand-500"></i>
+                    Resumen Gramatical
+                </h3>
+                <button onclick="toggleModal('rulesModal', false)" class="text-slate-400 hover:text-white p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="p-5 overflow-y-auto space-y-4 text-xs text-slate-300 leading-relaxed">
+                <div>
+                    <h4 class="font-bold text-brand-400 text-sm mb-1">1. Porcentajes de Frecuencia</h4>
+                    <p>Always (100%), Usually (90%), Often (70%), Sometimes (50%), Hardly ever (10%), Never (0%).</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-brand-400 text-sm mb-1">2. Posición con Verbos de Acción</h4>
+                    <p>Se coloca <strong>ANTES</strong> del verbo principal (Afirmativa, Negativa y Pregunta).</p>
+                    <p class="text-slate-400 italic">Ej: I <u>always</u> study. / Do you <u>always</u> study?</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-brand-400 text-sm mb-1">3. Posición con Verbo TO BE</h4>
+                    <p>• Afirmativa: <strong>DESPUÉS</strong> del verbo to be. (She is <u>always</u> happy)</p>
+                    <p>• Negativa: <strong>DESPUÉS DE NOT</strong>. (She is not <u>always</u> happy)</p>
+                    <p>• Pregunta: <strong>DESPUÉS DEL SUJETO</strong>. (Is she <u>always</u> happy?)</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-brand-400 text-sm mb-1">4. Posición con Verbos Modales (can, should, might)</h4>
+                    <p>Se ubica <strong>ANTES</strong> del verbo principal. (I can <u>always</u> arrive on time)</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-brand-400 text-sm mb-1">5. Restricciones Especiales</h4>
+                    <p>• <strong>Doble negación prohibida:</strong> Never y Hardly ever NO usan don't/doesn't.</p>
+                    <p>• <strong>Énfasis Inicial:</strong> Sometimes, Usually y Often pueden ir al inicio. (Always, Never y Hardly ever NUNCA van al inicio).</p>
+                    <p>• Los adverbios de frecuencia NO van al final de la oración.</p>
+                </div>
+            </div>
+            <div class="p-3 border-t border-slate-700 text-right bg-slate-900/50">
+                <button onclick="toggleModal('rulesModal', false)" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-4 py-2 rounded-lg font-semibold">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="p-3 text-center text-[11px] text-slate-500 no-print">
+        Sistema de Evaluación Adaptativa • Adverbios de Frecuencia
+    </footer>
+
+    <!-- LÓGICA JAVASCRIPT INTEGRAL -->
+    <script>
+        // =========================================================================
+        // CONFIGURACIÓN DE WEB3FORMS
+        // Reemplaza "AQUÍ_TU_KEY_REAL" por tu Access Key obtenida en web3forms.com
+        // Ejemplo: const WEB3FORMS_ACCESS_KEY = "12345678-abcd-1234-efgh-123456789abc";
+        // =========================================================================
+        const WEB3FORMS_ACCESS_KEY = "139149f8-e62c-4b86-83e8-5278fd5dfb19";
+
+        // BANCO ORIGINAL DE 50 EJERCICIOS
+        const RAW_QUESTIONS = [
+            // Porcentajes y Significados (1-8)
+            { type: 'choice', category: 'Porcentajes', title: '¿Qué adverbio representa el 100% de la frecuencia?', options: ['Always', 'Usually', 'Often', 'Never'], correct: 0, exp: 'Always representa el 100% de las veces (Siempre).' },
+            { type: 'choice', category: 'Porcentajes', title: '¿Qué adverbio representa el 0% de la frecuencia?', options: ['Hardly ever', 'Never', 'Sometimes', 'Often'], correct: 1, exp: 'Never indica el 0% de las veces (Nunca).' },
+            { type: 'choice', category: 'Porcentajes', title: '¿Qué adverbio corresponde aproximadamente al 90%?', options: ['Usually', 'Often', 'Sometimes', 'Always'], correct: 0, exp: 'Usually indica el 90% de las veces (Usualmente).' },
+            { type: 'choice', category: 'Porcentajes', title: '¿Qué adverbio corresponde al 70% de frecuencia?', options: ['Usually', 'Often', 'Hardly ever', 'Never'], correct: 1, exp: 'Often indica aproximadamente el 70% (A menudo).' },
+            { type: 'choice', category: 'Porcentajes', title: '¿Qué adverbio corresponde al 10% de frecuencia?', options: ['Hardly ever', 'Sometimes', 'Never', 'Often'], correct: 0, exp: 'Hardly ever representa el 10% (Casi nunca).' },
+            { type: 'choice', category: 'Traducción', title: 'Traducción correcta de "A menudo":', options: ['Often', 'Usually', 'Sometimes', 'Always'], correct: 0, exp: 'Often traduce "A menudo".' },
+            { type: 'choice', category: 'Traducción', title: 'Traducción correcta de "Casi nunca":', options: ['Hardly ever', 'Never', 'Sometimes', 'Usually'], correct: 0, exp: 'Hardly ever traduce "Casi nunca".' },
+            { type: 'choice', category: 'Traducción', title: 'Traducción correcta de "Algunas veces":', options: ['Sometimes', 'Usually', 'Often', 'Always'], correct: 0, exp: 'Sometimes traduce "Algunas veces".' },
+
+            // Verbos de Acción (9-20)
+            { type: 'scramble', category: 'Verbos de Acción', title: 'Ordena la oración afirmativa con verbo de acción:', words: ['I', 'always', 'study', 'at', 'night'], correctOrder: [0, 1, 2, 3, 4], exp: 'Con verbos de acción, el adverbio va ANTES del verbo principal: I always study at night.' },
+            { type: 'choice', category: 'Verbos de Acción', title: 'Selecciona la oración correcta:', options: ['I don\'t always study at night.', 'I always don\'t study at night.', 'I don\'t study always at night.'], correct: 0, exp: 'En negativa con verbo de acción: sujeto + don\'t/doesn\'t + adverbio + verbo.' },
+            { type: 'choice', category: 'Verbos de Acción', title: 'Pregunta correcta con verbo de acción:', options: ['Do you always study at night?', 'Always do you study at night?', 'Do always you study at night?'], correct: 0, exp: 'En preguntas con verbos de acción: Auxiliar + Sujeto + Adverbio + Verbo principal.' },
+            { type: 'fill', category: 'Verbos de Acción', title: 'Completa la frase: "I _____ prepare breakfast before going to work."', options: ['always', 'am always', 'always am'], correct: 0, exp: 'Prepare es verbo de acción, el adverbio "always" se coloca justo antes.' },
+            { type: 'fill', category: 'Verbos de Acción', title: 'Completa: "She _____ uses her phone in class."', options: ['hardly ever', 'doesn\'t hardly ever', 'uses hardly ever'], correct: 0, exp: 'Hardly ever va antes del verbo principal "uses".' },
+            { type: 'scramble', category: 'Verbos de Acción', title: 'Ordena la frase:', words: ['We', 'usually', 'go', 'for', 'a', 'walk'], correctOrder: [0, 1, 2, 3, 4, 5], exp: 'We usually go for a walk in the afternoons.' },
+            { type: 'fill', category: 'Verbos de Acción', title: 'Completa: "I _____ listen to music while I study."', options: ['sometimes', 'am sometimes', 'listen sometimes'], correct: 0, exp: 'Sometimes va antes del verbo de acción "listen".' },
+            { type: 'choice', category: 'Verbos de Acción', title: 'Selecciona la opción correcta:', options: ['They never arrive late to meetings.', 'They don\'t never arrive late to meetings.', 'They arrive never late to meetings.'], correct: 0, exp: 'Never ya es negativo, no lleva don\'t y va antes de arrive.' },
+            { type: 'choice', category: 'Verbos de Acción', title: 'Selecciona la oración negativa correcta:', options: ['I don\'t always finish my homework on time.', 'I don\'t finish always my homework on time.', 'I always don\'t finish my homework on time.'], correct: 0, exp: 'I don\'t always finish...' },
+            { type: 'fill', category: 'Verbos de Acción', title: 'Completa: "My brother _____ plays video games on weekends."', options: ['often', 'is often', 'plays often'], correct: 0, exp: 'Often va antes del verbo principal "plays".' },
+            { type: 'choice', category: 'Verbos de Acción', title: '¿Dónde se ubica el adverbio con la mayoría de verbos en inglés?', options: ['Antes del verbo principal', 'Después del verbo principal', 'Al final de la oración'], correct: 0, exp: 'Con verbos de acción va ANTES del verbo principal.' },
+            { type: 'verify', category: 'Verbos de Acción', title: '¿La oración "I smoke never" es gramaticalmente correcta?', correct: false, exp: 'Incorrecto. Debe ser: "I never smoke". No va al final.' },
+
+            // Verbo TO BE (21-32)
+            { type: 'scramble', category: 'Verbo TO BE', title: 'Ordena con verbo TO BE en afirmativa:', words: ['She', 'is', 'always', 'happy'], correctOrder: [0, 1, 2, 3], exp: 'Con el verbo TO BE, el adverbio se ubica DESPUÉS del verbo to be (is always).' },
+            { type: 'scramble', category: 'Verbo TO BE', title: 'Ordena con verbo TO BE:', words: ['They', 'are', 'usually', 'at', 'home'], correctOrder: [0, 1, 2, 3, 4], exp: 'They are usually at home (DESPUÉS del verbo to be).' },
+            { type: 'choice', category: 'Verbo TO BE', title: '¿Cuál es la forma correcta?', options: ['I am sometimes tired.', 'I sometimes am tired.', 'I am tired sometimes.'], correct: 0, exp: 'Con verbo TO BE va después de am/is/are: "I am sometimes tired".' },
+            { type: 'choice', category: 'Verbo TO BE', title: 'Oración negativa con TO BE:', options: ['She is not always happy.', 'She is always not happy.', 'She not is always happy.'], correct: 0, exp: 'En oraciones negativas con TO BE, el adverbio va DESPUÉS de "not".' },
+            { type: 'fill', category: 'Verbo TO BE', title: 'Completa: "They are not _____ at home."', options: ['usually', 'never', 'don\'t'], correct: 0, exp: 'They are not usually at home.' },
+            { type: 'choice', category: 'Verbo TO BE', title: 'Selecciona la oración negativa con TO BE:', options: ['I\'m not always tired.', 'I\'m always not tired.', 'I don\'t am always tired.'], correct: 0, exp: 'I\'m not always tired (después de not).' },
+            { type: 'choice', category: 'Verbo TO BE', title: 'Pregunta correcta con TO BE:', options: ['Is she always happy?', 'Always is she happy?', 'Is always she happy?'], correct: 0, exp: 'En preguntas con TO BE, el adverbio va DESPUÉS del sujeto: Is (verbo) she (sujeto) always (adverbio)...' },
+            { type: 'choice', category: 'Verbo TO BE', title: 'Pregunta correcta con TO BE:', options: ['Are they usually at home?', 'Usually are they at home?', 'Are usually they at home?'], correct: 0, exp: 'Are (TO BE) + they (sujeto) + usually (adverbio) + at home?' },
+            { type: 'choice', category: 'Verbo TO BE', title: 'Pregunta correcta con TO BE en primera persona:', options: ['Am I sometimes tired?', 'Sometimes am I tired?', 'Am sometimes I tired?'], correct: 0, exp: 'Am + I + sometimes + tired?' },
+            { type: 'fill', category: 'Verbo TO BE', title: 'Completa: "She is _____ happy at work."', options: ['always', 'always is', 'is always'], correct: 0, exp: 'She is + always + happy at work.' },
+            { type: 'fill', category: 'Verbo TO BE', title: 'Completa: "They _____ usually tired."', options: ['are', 'do', 'have'], correct: 0, exp: 'They are + usually + tired.' },
+            { type: 'verify', category: 'Verbo TO BE', title: '¿"She always is happy" es la estructura estándar más natural?', correct: false, exp: 'Incorrecto. Suena raro. Lo estándar con To Be es: "She is always happy".' },
+
+            // Verbos Modales (33-38)
+            { type: 'scramble', category: 'Verbos Modales', title: 'Ordena con verbo modal (can):', words: ['I', 'can', 'always', 'arrive', 'on', 'time'], correctOrder: [0, 1, 2, 3, 4, 5], exp: 'Con modales, el adverbio va ANTES del verbo principal (arrive) y después del modal (can).' },
+            { type: 'choice', category: 'Verbos Modales', title: 'Oración negativa con modal:', options: ['I can\'t always arrive on time.', 'I always can\'t arrive on time.', 'I can\'t arrive always on time.'], correct: 0, exp: 'I can\'t + always + arrive on time.' },
+            { type: 'choice', category: 'Verbos Modales', title: 'Pregunta con verbo modal:', options: ['Can you always arrive on time?', 'Always can you arrive on time?', 'Can always you arrive on time?'], correct: 0, exp: 'Can + sujeto + adverbio + verbo principal?' },
+            { type: 'fill', category: 'Verbos Modales', title: 'Completa: "You should _____ check your work."', options: ['always', 'are always', 'always should'], correct: 0, exp: 'You should + always + check your work.' },
+            { type: 'choice', category: 'Verbos Modales', title: '¿Dónde se ubica el adverbio con modales como can, should, might?', options: ['Antes del verbo principal', 'Después del verbo principal', 'Al final de la oración'], correct: 0, exp: 'Se ubica antes del verbo principal.' },
+            { type: 'verify', category: 'Verbos Modales', title: '¿"Can you always arrive on time?" es una pregunta correcta?', correct: true, exp: 'Correcto. Estructura: Modal + Sujeto + Adverbio + Verbo principal.' },
+
+            // Restricciones Especiales y Errores Comunes (39-50)
+            { type: 'verify', category: 'Reglas Especiales', title: '¿La oración "I don\'t never go to school" es correcta?', correct: false, exp: 'Incorrecto. Never ya tiene sentido negativo. Lo correcto es "I never go to school" (sin don\'t).' },
+            { type: 'verify', category: 'Reglas Especiales', title: '¿La oración "I don\'t hardly ever wash the dishes" es correcta?', correct: false, exp: 'Incorrecto. Hardly ever no se usa con don\'t. Lo correcto es "I hardly ever wash the dishes".' },
+            { type: 'choice', category: 'Reglas Especiales', title: '¿Qué adverbios PUEDEN ir al inicio para dar énfasis?', options: ['Sometimes, usually, often', 'Always, never, hardly ever', 'Always, never, sometimes'], correct: 0, exp: 'Sometimes, usually y often pueden ir al inicio para dar énfasis.' },
+            { type: 'choice', category: 'Reglas Especiales', title: '¿Cuáles adverbios NUNCA se pueden usar al inicio de una oración?', options: ['Always, never, hardly ever', 'Sometimes, usually, often', 'Often, usually, sometimes'], correct: 0, exp: 'Always, never y hardly ever NUNCA se usan al inicio.' },
+            { type: 'verify', category: 'Reglas Especiales', title: '¿Es correcta la oración "Always I go to school"?', correct: false, exp: 'Incorrecto. Always no puede ir al inicio. Lo correcto es "I always go to school".' },
+            { type: 'verify', category: 'Reglas Especiales', title: '¿Es correcta la oración "Never I eat meat"?', correct: false, exp: 'Incorrecto. Never no se usa al inicio. Lo correcto es "I never eat meat".' },
+            { type: 'verify', category: 'Reglas Especiales', title: '¿Es correcta la oración "Sometimes I eat junk food"?', correct: true, exp: 'Correcto. Sometimes sí se puede colocar al inicio para dar énfasis.' },
+            { type: 'verify', category: 'Reglas Especiales', title: '¿Es correcta la oración "I go to school always"?', correct: false, exp: 'Incorrecto. Los adverbios de frecuencia no se colocan al final de la oración.' },
+            { type: 'verify', category: 'Reglas Especiales', title: '¿Es correcta la oración "She eats junk food sometimes"?', correct: false, exp: 'Incorrecto. No debe ir al final. Lo correcto es "She sometimes eats junk food".' },
+            { type: 'choice', category: 'Reglas Especiales', title: 'Corrige: "We don\'t ever eat fast food."', options: ['We hardly ever eat fast food.', 'We don\'t never eat fast food.', 'We eat fast food hardly ever.'], correct: 0, exp: 'Lo correcto para expresar "casi nunca" sin doble negación es "We hardly ever eat fast food".' },
+            { type: 'fill', category: 'Reglas Especiales', title: 'Completa: "_____ she goes to the gym."', options: ['Often', 'Always', 'Never'], correct: 0, exp: 'Often sí puede ubicarse al inicio para dar énfasis.' },
+            { type: 'choice', category: 'Síntesis', title: '¿Cuál es la regla de ubicación para los adverbios de frecuencia al final de oraciones?', options: ['No deben ubicarse al final de la oración', 'Siempre van al final', 'Se ubican al final solo con To Be'], correct: 0, exp: 'Los adverbios de frecuencia no se ubican al final de las oraciones.' }
+        ];
+
+        // ESTADO GLOBAL DE LA APLICACIÓN
+        let activeQuestions = [];
+        let currentIdx = 0;
+        let score = 0;
+        let streak = 0;
+        let studentName = '';
+        let isAnswered = false;
+        let currentScrambleState = [];
+        let suspicions = [];
+        let audioCtx = null;
+
+        // ALGORITMO FISHER-YATES PARA MEZCLAR ELEMENTOS
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // PREPARAR PREGUNTAS Y OPCIONES CON DOBLE MEZCLA ALEATORIA
+        function prepareQuestions() {
+            // 1. Mezclar el orden de las preguntas
+            const shuffledQuestions = shuffleArray(RAW_QUESTIONS);
+
+            // 2. Mezclar el orden de las respuestas en cada pregunta
+            activeQuestions = shuffledQuestions.map(q => {
+                const qCopy = { ...q };
+                if (qCopy.options) {
+                    const originalCorrectText = qCopy.options[qCopy.correct];
+                    const shuffledOptions = shuffleArray(qCopy.options);
+                    qCopy.options = shuffledOptions;
+                    qCopy.correct = shuffledOptions.indexOf(originalCorrectText);
+                }
+                return qCopy;
+            });
+        }
+
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) {
+                    audioCtx = new AudioContext();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playSound(type) {
+            try {
+                initAudio();
+                if (!audioCtx) return;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'correct') {
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(659.25, audioCtx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.2);
+                } else if (type === 'wrong') {
+                    osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(146.83, audioCtx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.25);
+                }
+            } catch (e) {}
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setupAntiCheat();
+        });
+
+        function setupAntiCheat() {
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            document.addEventListener('keydown', e => {
+                if (
+                    e.key === 'F12' || 
+                    (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) ||
+                    (e.ctrlKey && (e.key === 'u' || e.key === 'U' || e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V')) ||
+                    (e.metaKey && (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V'))
+                ) {
+                    e.preventDefault();
+                    registerSuspicion('Intento de atajo de teclado bloqueado');
+                }
+            });
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden && currentIdx > 0 && currentIdx < activeQuestions.length) {
+                    registerSuspicion('Cambio de pestaña / Salida de pantalla detectada');
+                }
+            });
+
+            window.addEventListener('blur', () => {
+                if (currentIdx > 0 && currentIdx < activeQuestions.length) {
+                    registerSuspicion('Pérdida de foco de ventana/pantalla');
+                }
+            });
+        }
+
+        function registerSuspicion(reason) {
+            const timestamp = new Date().toLocaleTimeString();
+            suspicions.push(`[${timestamp}] Pregunta ${currentIdx + 1}: ${reason}`);
+            
+            const banner = document.getElementById('cheatWarningBanner');
+            banner.classList.remove('hidden');
+            setTimeout(() => banner.classList.add('hidden'), 3500);
+        }
+
+        function startTest(e) {
+            e.preventDefault();
+            initAudio();
+            studentName = document.getElementById('studentName').value.trim();
+
+            // Preparar y aleatorizar preguntas y respuestas
+            prepareQuestions();
+
+            document.getElementById('welcomeCard').classList.add('hidden');
+            document.getElementById('quizCard').classList.remove('hidden');
+            document.getElementById('rulesBtn').classList.remove('hidden');
+            document.getElementById('antiCopyBadge').classList.remove('hidden');
+
+            currentIdx = 0;
+            score = 0;
+            streak = 0;
+            suspicions = [];
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            isAnswered = false;
+            const q = activeQuestions[currentIdx];
+
+            document.getElementById('questionCounter').innerText = `Pregunta ${currentIdx + 1} de ${activeQuestions.length}`;
+            document.getElementById('questionCategory').innerText = q.category;
+            document.getElementById('questionTitle').innerText = q.title;
+            document.getElementById('streakCount').innerText = `Racha: ${streak}`;
+            
+            const progress = ((currentIdx) / activeQuestions.length) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+
+            const feedbackBox = document.getElementById('feedbackBox');
+            feedbackBox.className = 'hidden mt-4 p-4 rounded-xl border text-xs sm:text-sm transition-all duration-200';
+            feedbackBox.innerHTML = '';
+
+            const area = document.getElementById('interactionArea');
+            area.innerHTML = '';
+
+            if (q.type === 'choice' || q.type === 'fill') {
+                renderChoiceOptions(q, area);
+            } else if (q.type === 'verify') {
+                renderVerifyOptions(q, area);
+            } else if (q.type === 'scramble') {
+                renderScrambleOptions(q, area);
+            }
+        }
+
+        function renderChoiceOptions(q, container) {
+            const grid = document.createElement('div');
+            grid.className = 'grid grid-cols-1 gap-2.5';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'w-full text-left p-3.5 sm:p-4 rounded-xl bg-slate-900/80 hover:bg-slate-700/80 border border-slate-700/80 text-xs sm:text-sm font-medium text-slate-200 transition active:scale-[0.99] flex items-center justify-between group';
+                btn.innerHTML = `
+                    <span>${opt}</span>
+                    <i class="fa-regular fa-circle text-slate-500 group-hover:text-brand-400 text-sm"></i>
+                `;
+                btn.onclick = () => selectChoice(idx, btn, q);
+                grid.appendChild(btn);
+            });
+
+            container.appendChild(grid);
+        }
+
+        function selectChoice(selectedIdx, btnElement, q) {
+            if (isAnswered) return;
+            isAnswered = true;
+
+            const isCorrect = selectedIdx === q.correct;
+            handleResult(isCorrect, q.exp);
+
+            const buttons = btnElement.parentElement.children;
+            Array.from(buttons).forEach((b, idx) => {
+                b.disabled = true;
+                if (idx === q.correct) {
+                    b.className = 'w-full text-left p-3.5 sm:p-4 rounded-xl bg-emerald-950/80 border border-emerald-500 text-emerald-200 font-bold text-xs sm:text-sm flex items-center justify-between';
+                    b.querySelector('i').className = 'fa-solid fa-circle-check text-emerald-400 text-base';
+                } else if (idx === selectedIdx && !isCorrect) {
+                    b.className = 'w-full text-left p-3.5 sm:p-4 rounded-xl bg-rose-950/80 border border-rose-500 text-rose-200 font-medium text-xs sm:text-sm flex items-center justify-between';
+                    b.querySelector('i').className = 'fa-solid fa-circle-xmark text-rose-400 text-base';
+                } else {
+                    b.style.opacity = '0.4';
+                }
+            });
+
+            autoAdvance();
+        }
+
+        function renderVerifyOptions(q, container) {
+            const grid = document.createElement('div');
+            grid.className = 'grid grid-cols-2 gap-3';
+
+            const opts = [
+                { label: 'Correcto', value: true, icon: 'fa-check', color: 'emerald' },
+                { label: 'Incorrecto', value: false, icon: 'fa-xmark', color: 'rose' }
+            ];
+
+            opts.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'p-4 rounded-xl bg-slate-900/80 hover:bg-slate-700/80 border border-slate-700/80 text-slate-200 font-bold text-xs sm:text-sm transition active:scale-[0.98] flex flex-col items-center justify-center gap-2 text-center';
+                btn.innerHTML = `
+                    <i class="fa-solid ${opt.icon} text-lg text-slate-400"></i>
+                    <span>${opt.label}</span>
+                `;
+                btn.onclick = () => selectVerify(opt.value, btn, q);
+                grid.appendChild(btn);
+            });
+
+            container.appendChild(grid);
+        }
+
+        function selectVerify(selectedValue, btnElement, q) {
+            if (isAnswered) return;
+            isAnswered = true;
+
+            const isCorrect = selectedValue === q.correct;
+            handleResult(isCorrect, q.exp);
+
+            const buttons = btnElement.parentElement.children;
+            Array.from(buttons).forEach(b => {
+                b.disabled = true;
+                b.style.opacity = '0.4';
+            });
+
+            btnElement.style.opacity = '1';
+            if (isCorrect) {
+                btnElement.className = 'p-4 rounded-xl bg-emerald-950 border border-emerald-500 text-emerald-200 font-bold text-xs sm:text-sm flex flex-col items-center justify-center gap-2';
+            } else {
+                btnElement.className = 'p-4 rounded-xl bg-rose-950 border border-rose-500 text-rose-200 font-bold text-xs sm:text-sm flex flex-col items-center justify-center gap-2';
+            }
+
+            autoAdvance();
+        }
+
+        function renderScrambleOptions(q, container) {
+            currentScrambleState = [];
+            
+            let shuffled = q.words.map((w, idx) => ({ word: w, originalIdx: idx }));
+            shuffled = shuffleArray(shuffled);
+
+            container.innerHTML = `
+                <div class="space-y-3">
+                    <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Toca las palabras en orden correcto:</p>
+                    <div id="selectedWordsArea" class="min-h-[50px] p-3 bg-slate-900 rounded-xl border border-slate-700/80 flex flex-wrap gap-2 items-center">
+                        <span id="scramblePlaceholder" class="text-xs text-slate-600 italic">Haz clic en las palabras de abajo...</span>
+                    </div>
+                    <div id="availableWordsArea" class="flex flex-wrap gap-2 pt-2"></div>
+                </div>
+            `;
+
+            const availArea = container.querySelector('#availableWordsArea');
+            shuffled.forEach((item) => {
+                const wBtn = document.createElement('button');
+                wBtn.type = 'button';
+                wBtn.className = 'px-3 py-2 bg-slate-700 hover:bg-slate-600 border border-slate-600 text-white font-medium text-xs rounded-lg transition active:scale-95';
+                wBtn.innerText = item.word;
+                wBtn.onclick = () => pickScrambleWord(item, wBtn, q);
+                availArea.appendChild(wBtn);
+            });
+        }
+
+        function pickScrambleWord(item, btn, q) {
+            if (isAnswered) return;
+
+            const placeholder = document.getElementById('scramblePlaceholder');
+            if (placeholder) placeholder.remove();
+
+            currentScrambleState.push(item);
+            btn.classList.add('invisible');
+
+            const selectedArea = document.getElementById('selectedWordsArea');
+            const wordChip = document.createElement('span');
+            wordChip.className = 'px-3 py-1.5 bg-brand-600 text-white font-semibold text-xs rounded-lg flex items-center gap-1.5 cursor-pointer';
+            wordChip.innerText = item.word;
+            wordChip.onclick = () => {
+                if (isAnswered) return;
+                currentScrambleState = currentScrambleState.filter(x => x !== item);
+                wordChip.remove();
+                btn.classList.remove('invisible');
+                if (currentScrambleState.length === 0 && !document.getElementById('scramblePlaceholder')) {
+                    selectedArea.innerHTML = '<span id="scramblePlaceholder" class="text-xs text-slate-600 italic">Haz clic en las palabras de abajo...</span>';
+                }
+            };
+
+            selectedArea.appendChild(wordChip);
+
+            if (currentScrambleState.length === q.words.length) {
+                isAnswered = true;
+                const isCorrect = currentScrambleState.every((val, idx) => val.originalIdx === q.correctOrder[idx]);
+                handleResult(isCorrect, q.exp);
+                autoAdvance();
+            }
+        }
+
+        function handleResult(isCorrect, explanation) {
+            if (isCorrect) {
+                score++;
+                streak++;
+                playSound('correct');
+            } else {
+                streak = 0;
+                playSound('wrong');
+            }
+
+            const feedbackBox = document.getElementById('feedbackBox');
+            feedbackBox.classList.remove('hidden');
+
+            if (isCorrect) {
+                feedbackBox.className = 'mt-4 p-4 rounded-xl border bg-emerald-950/60 border-emerald-500/50 text-emerald-200 text-xs sm:text-sm';
+                feedbackBox.innerHTML = `
+                    <div class="font-bold flex items-center gap-2 mb-1 text-emerald-400">
+                        <i class="fa-solid fa-circle-check text-base"></i> ¡Respuesta Correcta!
+                    </div>
+                    <p class="text-slate-300">${explanation}</p>
+                `;
+            } else {
+                feedbackBox.className = 'mt-4 p-4 rounded-xl border bg-rose-950/60 border-rose-500/50 text-rose-200 text-xs sm:text-sm';
+                feedbackBox.innerHTML = `
+                    <div class="font-bold flex items-center gap-2 mb-1 text-rose-400">
+                        <i class="fa-solid fa-circle-xmark text-base"></i> Respuesta Incorrecta
+                    </div>
+                    <p class="text-slate-300">${explanation}</p>
+                `;
+            }
+        }
+
+        function autoAdvance() {
+            setTimeout(() => {
+                currentIdx++;
+                if (currentIdx < activeQuestions.length) {
+                    loadQuestion();
+                } else {
+                    finishTest();
+                }
+            }, 1100);
+        }
+
+        function finishTest() {
+            document.getElementById('quizCard').classList.add('hidden');
+            document.getElementById('resultCard').classList.remove('hidden');
+
+            const finalGradeNum = ((score / activeQuestions.length) * 10);
+            const formattedGrade = finalGradeNum.toFixed(2);
+
+            document.getElementById('studentResultName').innerText = `Estudiante: ${studentName}`;
+            document.getElementById('finalGrade').innerText = `${formattedGrade} / 10.00`;
+            document.getElementById('correctCountText').innerText = `${score} / ${activeQuestions.length}`;
+
+            const iconBox = document.getElementById('resultIcon');
+            const resultTitle = document.getElementById('resultTitle');
+
+            if (finalGradeNum >= 8.5) {
+                iconBox.className = 'inline-flex p-4 rounded-full mb-3 text-4xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+                iconBox.innerHTML = '<i class="fa-solid fa-award"></i>';
+                resultTitle.innerText = '¡Excelente Desempeño!';
+            } else if (finalGradeNum >= 7.0) {
+                iconBox.className = 'inline-flex p-4 rounded-full mb-3 text-4xl bg-brand-500/10 text-brand-400 border border-brand-500/20';
+                iconBox.innerHTML = '<i class="fa-solid fa-thumbs-up"></i>';
+                resultTitle.innerText = '¡Aprobado Satisfactoriamente!';
+            } else {
+                iconBox.className = 'inline-flex p-4 rounded-full mb-3 text-4xl bg-rose-500/10 text-rose-400 border border-rose-500/20';
+                iconBox.innerHTML = '<i class="fa-solid fa-book-bookmark"></i>';
+                resultTitle.innerText = 'Requiere Refuerzo Gramatical';
+            }
+
+            const antiCopyStatusText = document.getElementById('antiCopyStatusText');
+            const suspicionReport = document.getElementById('suspicionReport');
+            const suspicionList = document.getElementById('suspicionList');
+
+            if (suspicions.length === 0) {
+                antiCopyStatusText.innerText = 'Limpio (0 Alertas)';
+                antiCopyStatusText.className = 'font-bold text-emerald-400 text-base';
+                suspicionReport.classList.add('hidden');
+            } else {
+                antiCopyStatusText.innerText = `Alertas: ${suspicions.length}`;
+                antiCopyStatusText.className = 'font-bold text-rose-400 text-base';
+                suspicionReport.classList.remove('hidden');
+                suspicionList.innerHTML = suspicions.map(s => `<li>${s}</li>`).join('');
+            }
+
+            sendWeb3FormsReport(formattedGrade);
+        }
+
+        function sendWeb3FormsReport(formattedGrade) {
+            const statusBox = document.getElementById('emailStatusBox');
+            const spinner = document.getElementById('emailSpinner');
+            const title = document.getElementById('emailStatusTitle');
+            const detail = document.getElementById('emailStatusDetail');
+
+            if (!WEB3FORMS_ACCESS_KEY || WEB3FORMS_ACCESS_KEY === "AQUÍ_TU_KEY_REAL") {
+                statusBox.className = 'mb-6 p-4 rounded-xl text-xs border bg-slate-900 border-slate-700 flex items-center gap-3';
+                spinner.innerHTML = '<i class="fa-solid fa-circle-info text-amber-400 text-base"></i>';
+                title.innerText = 'Informe local generado';
+                detail.innerText = 'No se ha configurado la Web3Forms Key en la línea 266 del código. Puedes imprimir el informe.';
+                return;
+            }
+
+            const payload = {
+                access_key: WEB3FORMS_ACCESS_KEY,
+                subject: `[Calificación Adverbios] ${studentName} - Nota: ${formattedGrade}/10.00`,
+                from_name: 'Evaluación de Inglés App',
+                Estudiante: studentName,
+                Calificación: `${formattedGrade} / 10.00`,
+                Aciertos: `${score} de 50 preguntas`,
+                Alertas_Anticopia: suspicions.length > 0 ? suspicions.join(' | ') : 'Sin alertas (Examen Limpio)',
+                Fecha_Hora: new Date().toLocaleString()
+            };
+
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    spinner.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400 text-base"></i>';
+                    title.innerText = '¡Resultados enviados al docente!';
+                    detail.innerText = 'La calificación y el reporte anticopia fueron entregados exitosamente.';
+                    statusBox.className = 'mb-6 p-4 rounded-xl text-xs border bg-emerald-950/40 border-emerald-500/40 flex items-center gap-3';
+                } else {
+                    throw new Error(data.message || 'Error en la API');
+                }
+            })
+            .catch(err => {
+                spinner.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-rose-400 text-base"></i>';
+                title.innerText = 'No se pudo enviar el reporte por correo';
+                detail.innerText = 'Verifica la Access Key en la línea 266 del código.';
+                statusBox.className = 'mb-6 p-4 rounded-xl text-xs border bg-rose-950/40 border-rose-500/40 flex items-center gap-3';
+            });
+        }
+
+        function restartQuiz() {
+            document.getElementById('resultCard').classList.add('hidden');
+            document.getElementById('welcomeCard').classList.remove('hidden');
+            document.getElementById('rulesBtn').classList.add('hidden');
+            document.getElementById('antiCopyBadge').classList.add('hidden');
+        }
+
+        function toggleModal(modalId, show) {
+            const modal = document.getElementById(modalId);
+            if (show) modal.classList.remove('hidden');
+            else modal.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
